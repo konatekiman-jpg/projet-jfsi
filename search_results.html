@@ -1,0 +1,155 @@
+{% extends 'infos/base.html' %}
+{% block content %}
+
+<style>
+  .result-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1.5rem;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .result-item:hover {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+  }
+
+  .result-item img {
+    width: 140px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .result-item img:hover {
+    transform: scale(1.03);
+  }
+
+  .result-item .text-content {
+    flex: 1;
+  }
+
+  .result-item h5 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .result-item p {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .sidebar-pub {
+    position: sticky;
+    top: 80px;
+  }
+
+  .sidebar-pub .card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+  }
+
+  .sidebar-pub img:hover {
+    transform: scale(1.02);
+  }
+
+  .sidebar-pub p {
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  @media (max-width: 767px) {
+    .sidebar-pub {
+      display: none;
+    }
+  }
+</style>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Résultats pour “{{ query }}”</h2>
+  <div class="row">
+    <!-- Résultats -->
+    <div class="col-md-8">
+      {% if results %}
+        {% for article in results %}
+          <div class="result-item">
+            {% if article.image %}
+              <img src="{{ article.image.url }}" alt="{{ article.title }}">
+            {% endif %}
+            <div class="text-content">
+              <h5>
+                <a href="{% url 'article_detail' article.pk %}" class="text-decoration-none text-dark">
+                  {{ article.title }}
+                </a>
+              </h5>
+              <p>{{ article.content|truncatewords:30 }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">Aucun article ne correspond à votre recherche.</p>
+      {% endif %}
+    </div>
+
+      <aside class="col-lg-4 d-none d-lg-block">
+                <div class="card p-4 shadow-lg border-0" style="background: linear-gradient(135deg, #fdfcfa, #f0f4f8); border-radius: 20px; border-top: 5px solid #dc3545;">
+                <h5 class="fw-bold mb-3 text-danger d-flex align-items-center gap-2" style="font-size: 1.9rem;">
+                  ✊ Stop au silence — Justice pour les peuples oubliés
+                </h5>
+                <div class="alert alert-danger d-flex align-items-start gap-3 px-4 py-3 rounded" style="background-color: #ffe6e6; border-left: 5px solid #dc3545;">
+                  <div>
+                    <p class="mb-0 text-dark fw-semibold" style="font-size: 1.1rem; line-height: 1.7;">
+                      En <strong>Palestine</strong>, au <strong>Congo</strong>… des milliers de vies fauchées.<br>
+                      Trop de sang. Trop de silence. Trop d’indifférence.<br>
+                      <span class="text-danger">Ce n’est pas un conflit. C’est un massacre, un génocide.</span>
+                    </p>
+                  </div>
+                </div>
+                <p class="mt-4 text-dark" style="line-height: 1.8; font-size: 1.08rem;">
+                  Le monde regarde, mais détourne les yeux.<br>
+                  À nous de parler. À nous de dénoncer. À nous d’agir.<br>
+                  Donnons une voix à ceux qu’on tente de faire taire.
+                </p>
+                <blockquote class="fst-italic px-4 py-3 rounded mb-4" style="background-color: #e8f1fb; font-size: 1rem; border-left: 4px solid #198754; box-shadow: inset 0 0 6px rgba(13,110,253,0.1);">
+                  « Celui qui soulage un croyant d’une difficulté dans ce monde, Allah le soulagera d’une difficulté au Jour du Jugement. »<br>
+                  <small class="text-success">—Abû Hurayra: Sahih Muslim</small>
+                </blockquote>
+                <div class="mt-2 text-muted small" style="font-size: 0.97rem;">
+                  <strong>📅 Dates de mémoire :</strong>
+                  <ul class="list-unstyled mt-2 mb-0" style="line-height: 1.6;">
+                    <li>🕯️ <strong>7 avril</strong> — Génocide rwandais</li>
+                    <li>🕊️ <strong>21 septembre</strong> — Journée internationale de la paix</li>
+                    <li>🇵🇸 <strong>29 novembre</strong> — Solidarité avec la Palestine</li>
+                  </ul>
+                </div>
+                <p class="mt-4 text-secondary" style="font-size: 0.86rem;">
+                  Une pensée ne suffit pas. Un post ne suffit pas.<br>
+                  Mais le silence, lui, tue. ✋
+                </p>
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-4" style="font-size: 15px; user-select: none;">
+                  <strong class="text-danger text-uppercase">🛑 Stop GENOCIDE</strong>
+                  <img src="https://flagcdn.com/w40/ps.png" alt="Palestine" style="width:28px; height:auto;">
+                  <img src="https://flagcdn.com/w40/cd.png" alt="Congo" style="width:28px; height:auto;">
+                </div>
+                <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                  <a href="https://www.amnesty.org/fr/petition/end-israels-genocide-against-palestinians-in-gaza/"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     class="btn btn-danger btn-sm rounded-pill px-3 fw-semibold d-flex align-items-center gap-2"
+                     style="transition: background 0.3s;">
+                    ✍️ Agir maintenant
+                  </a>
+                </div>
+          </div>
+      </aside>
+  </div>
+</div>
+
+{% endblock %}

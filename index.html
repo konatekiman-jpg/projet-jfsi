@@ -1,57 +1,259 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <title>JFSI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>JFSIweb</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" sizes="82x32" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <style>
+    @media (min-width: 992px) {
+      .navbar-brand {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .navbar-collapse {
+        justify-content: space-between;
+      }
+    }
+/* Fixer l'en-tête en haut */
+  .navbar-fixed {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1000; /*pour qu'il reste au dessus du texte */
+    border-bottom: 2px solid #2e7d32;
+    box-shadow: 0 2px 5px rgba(0,0,0,O.1);
+  }
+
+  .content-area {
+    padding: 20px;
+    margin-bottom: 50px;
+  }
+
+  .flash-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #000;
+    color: white;
+    height: 40px;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .flash-window {
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .flash-label {
+    background: red;
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    z-index: 2;
+  }
+
+  .flash-text {
+    display: inline-block;
+    padding-left: 100%;
+    animation: defilement-info 20s linear infinite;
+  }
+
+  @keyframes defilement-info {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(-100%, 0); }
+  } 
+
+    Menu {
+      background-color: #4012ac; /*Couleur bleu clair du ciel */
+      border: 5px solid #002d62; /*Bordure foncée épaisse comme sur l'image */
+      border-radius: 15px; /* Coins arrondis */
+      padding: 10px; /*espace entre le bord et le contenu*/
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    @media (max-width: 991.98px) {
+      .navbar-brand {
+        position: static;
+        transform: none;
+      }
+    }
+
+    header {
+      background-color: #775cbd !important;
+      
+    }
+
+   footer {
+  background-color: #2e7d32 !important;
+}
+    .navbar-brand img {
+      height: 40px;
+    }
+
+    footer a:hover {
+      color: #2e7d32;
+      transition: color 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">JFSI</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-      <ul class="navbar-nav mb-2 mb-lg-0">
+<!-- Navbar -->
+ <header class="navbar-fixed">
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+  <div class="container-fluid">
+<div class="main-wrapper">
+    <div class="herder-content">
+
+ <!-- Menu -->
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto align-items-lg-center">
         <li class="nav-item">
-          <a class="nav-link" href="#">Coran</a>
+          <g img src="logo_jfsi.webp"
+          alt="Logo" class=""logo-site>
+
+         <!-- Logo -->
+     <img src="{% static 'images/logo_jfsi.webp' %}"
+          alt="Logo" class="" style="display: inline-block; height: 50px !important; width: auto !important; max-width: 100px;" />
+    
+
+      <span class="navbar-brand" style="font-weight: bold; color: hsl(120, 18%, 97%);">Bienvenue sur notre site officiel du JFSI <P>JARDIN des FRERES et SOEURS en ISLAM</P></span>
+
+          <a class="nav-link" href="{% url 'home' %}">Articles</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/prieres/">Heures de prière</a>
         </li>
       </ul>
+      
+      <!-- Recherche -->
+      <form method="get" action="{% url 'article_search' %}" class="d-flex">
+        <input type="text" name="q" class="form-control form-control-sm me-2" placeholder="Rechercher..."
+          value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-light btn-sm">
+          <i class="bi bi-search"></i>
+        </button>
+      </form>
     </div>
   </div>
 </nav>
-
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h1 class="card-title">Bienvenue sur JFSI</h1>
-      <p class="card-text">Votre source fiable pour le Coran et les heures de prière.</p>
-      <a href="#" class="btn btn-primary">Explorer le Coran</a>
-      <a href="/prieres/" class="btn btn-secondary">Voir les heures de prière</a>
-    </div>
+</header>
+      
+<main class="content-area">
+  <article>
+    
+    <footer class="flash-container">
+  <div class="flash-label">FLASH INFO</div>
+  <div class="flash-window">
+    <div class="flash-text">
+              🚀 Bienvenue sur notre site officiel du JARDIN des FRERES et SOEURS en ISLAM ! – 🕋 l'info du Monde Musulman en Direct 📰: JFSI Organise sa Giga Rupture Collective le dimanche 08 Mars 2026 à l'Université Félix Houphouet Boigny de Cocody de 14h à 20h
+            </div>
   </div>
+</footer>
+</div>
+
+    <!-- Bouton burger -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+  
+<!-- Contenu -->
+<div class="container mt-4">
+  {% block content %}
+  {% endblock %}
 </div>
 
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-3 mt-5">
-  © Konate Kiman IBRAHIM — <a href="mailto:konatekiman@gmail.com" class="text-white text-decoration-underline">konatekiman@gmail.com</a> — 2026
+<footer class="text-white pt-5 pb-4 mt-5" style="background-color: #0d47a1;">
+  <div class="container text-md-left">
+    <div class="row text-md-left">
+
+      <!-- Presentation -->
+      <div class="col-md-6 col-lg-3 col-xl-2 mx-auto mt-3">
+        <h5 class="text-uppercase mb-4 fw-bold">JFSIweb</h5>
+      </div>
+      <!-- Services -->
+      <div class="col-md-6 col-lg-3 col-xl-3 mx-auto mt-3">
+        <h5 class="text-uppercase mb-4 fw-bold">Nos Services</h5>
+        <h6 class="text-white mb-1">Publicité Bannière</h6>
+        <p class="small mb-0 opacity-75">
+          Visibilité premium sur notre header<br>
+          Format : 1200x200px - Création incluse
+        </p>
+      </div>
+      <!-- Contact -->
+      <div class="col-md-6 col-lg-3 col-xl-2 mx-auto mt-3">
+        <h5 class="text-uppercase mb-4 fw-bold">Contact</h5>
+        <p class="d-flex align-items-center gap-2">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:wattdiama039@gmail.com" class="text-white text-decoration-underline" target="_blank">konatekiman@gmail.com</a>
+        </p>
+        <p class="d-flex align-items-center gap-2">
+          <i class="fas fa-phone"></i>
+          <a href="tel:+221784629593" class="text-white text-decoration-underline">+225 05 44 11 41 24</a>
+        </p>
+        <p class="d-flex align-items-center gap-2">
+          <i class="fas fa-map-marker-alt"></i>
+          Abidjan, Côte d'Ivoire
+        </p>
+      </div>
+      <!-- Réseaux sociaux -->
+      <div class="col-md-12 col-lg-3 col-xl-3 mx-auto mt-3 text-center text-lg-start">
+        <h5 class="text-uppercase mb-4 fw-bold">Suivez-nous</h5>
+        <a href="https://www.instagram.com/diama_thereal/" class="btn btn-outline-light btn-floating m-1" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/mouhamadou-diama-watt-284128278/" class="btn btn-outline-light btn-floating m-1" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/diamawatt" class="btn btn-outline-light btn-floating m-1" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://x.com/darckcrow3019" class="btn btn-outline-light btn-floating m-1" target="_blank">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
+    </div>
+
+    <hr class="my-4 text-white" />
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p class="mb-0">
+          © 2025 <strong>Konate Kiman Ibrahim</strong> — Tous droits réservés.
+        </p>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </article>
+  </main>
+
+
 </body>
 </html>

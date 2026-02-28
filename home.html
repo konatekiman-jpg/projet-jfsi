@@ -1,0 +1,365 @@
+{% extends 'infos/base.html' %}
+{% load static %}
+{% block content %}
+
+{% if banner %}
+<div class="banner-container mb-5 position-relative overflow-hidden rounded-4 shadow-lg" style="max-height: 200px;">
+  <a href="{{ banner.url }}" target="_blank" rel="noopener noreferrer" class="hover-transform">
+    <img src="{{ banner.image.url }}"
+         alt="{{ banner.title }}"
+         class="img-fluid w-100 h-100 object-fit-cover"
+         style="transition: transform 0.4s ease-in-out; height: 200px;">
+    <div class="position-absolute bottom-0 start-0 w-100 p-4 text-white"
+         style="background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);">
+      <div class="container">
+        <h3 class="mb-2 fw-bold">{{ banner.title }}</h3>
+        {% if banner.description %}
+        <p class="mb-0 d-none d-md-block">{{ banner.description|truncatechars:100 }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <span class="position-absolute top-0 end-0 m-3 badge rounded-pill bg-light text-dark">
+      <i class="bi bi-megaphone me-1"></i>Sponsorisé
+    </span>
+  </a>
+</div>
+{% endif %}
+
+<!-- Catégories d'articles -->
+      <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+        <a href="{% url 'articles_by_category' 'Tous' %}" class="border border-success px-3 py-1 rounded-pill fw-bold text-uppercase text-decoration-none text-success {% if current_category == 'Tous' %}bg-dark text-white{% endif %}">Tous</a>
+        <a href="{% url 'articles_by_category' 'Monde' %}" class="border border-success px-3 py-1 rounded-pill fw-bold text-uppercase text-decoration-none text-success {% if current_category == 'Monde' %}bg-dark text-white{% endif %}">Monde</a>
+        <a href="{% url 'articles_by_category' 'Afrique' %}" class="border border-success px-3 py-1 rounded-pill fw-bold text-uppercase text-decoration-none text-success {% if current_category == 'Afrique' %}bg-dark text-white{% endif %}">Afrique</a>
+        <a href="{% url 'articles_by_category' 'Europe' %}" class="border border-success px-3 py-1 rounded-pill fw-bold text-uppercase text-decoration-none text-success {% if current_category == 'Europe' %}bg-dark text-white{% endif %}">Europe</a>
+        <a href="{% url 'articles_by_category' 'Orient' %}" class="border border-success px-3 py-1 rounded-pill fw-bold text-uppercase text-decoration-none text-success {% if current_category == 'Orient' %}bg-dark text-white{% endif %}">Orient</a>
+      </div>
+      
+   {% if page_obj and page_obj|length > 0 %}
+   {% with page_obj.0 as main_article %}
+   <div class="mb-5 position-relative rounded overflow-hidden shadow-lg">
+      {% if main_article.image %}
+      <img src="{{ main_article.image.url }}" alt="{{ main_article.title }}" class="img-fluid w-100" style="height: 350px; object-fit: cover;">
+      {% endif %}
+      <div class="bg-dark bg-opacity-50 position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4 text-white">
+         <h2 class="fw-bold">{{ main_article.title }}</h2>
+         <p class="mb-2">{{ main_article.content|truncatewords:40 }}</p>
+         <a href="{% url 'article_detail' main_article.pk %}" class="btn btn-black-outline btn-sm rounded-pill px-4">Lire l'article</a>
+         <small class="mt-2 d-block text-light">Publié le {{ main_article.published_at|date:"d M Y" }}</small>
+      </div>
+   </div>
+   {% endwith %}
+   {% endif %}
+
+   <div class="row">
+      <div class="col-lg-8">
+         <div class="row gy-4">
+            {% for article in page_obj %}
+            {% if not forloop.first %}
+            <div class="col-md-6">
+               <div class="card h-100 shadow-sm border-0 rounded-3">
+                  {% if article.image %}
+                  <img src="{{ article.image.url }}" class="card-img-top rounded-top" alt="{{ article.title }}" style="height: 180px; object-fit: cover;">
+                  {% endif %}
+                  <div class="card-body d-flex flex-column">
+                     <h5 class="card-title fw-semibold">{{ article.title }}</h5>
+                     <p class="card-text text-muted small">{{ article.content|truncatewords:25 }}</p>
+                     <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <small class="text-secondary">📅 {{ article.published_at|date:"d M Y" }}</small>
+                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-black-outline btn-sm rounded-pill px-3">
+                           Voir <i class="bi bi-arrow-right"></i>
+                        </a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+         </div>
+
+         <nav aria-label="Navigation des pages" class="mt-5">
+            <ul class="pagination justify-content-center">
+               {% if page_obj.has_previous %}
+               <li class="page-item">
+                  <a class="page-link black-pagination" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+               </li>
+               {% else %}
+               <li class="page-item disabled">
+                  <span class="page-link black-pagination">Précédent</span>
+               </li>
+               {% endif %}
+
+               {% for num in page_obj.paginator.page_range %}
+               {% if page_obj.number == num %}
+               <li class="page-item active" aria-current="page">
+                  <span class="page-link black-pagination active-page">{{ num }}</span>
+               </li>
+               {% else %}
+               <li class="page-item">
+                  <a class="page-link black-pagination" href="?page={{ num }}">{{ num }}</a>
+               </li>
+               {% endif %}
+               {% endfor %}
+
+               {% if page_obj.has_next %}
+               <li class="page-item">
+                  <a class="page-link black-pagination" href="?page={{ page_obj.next_page_number }}">Suivant </a>
+               </li>
+               {% else %}
+               <li class="page-item disabled">
+                  <span class="page-link black-pagination">Suivant</span>
+               </li>
+               {% endif %}
+            </ul>
+         </nav>
+      </div>
+
+      <aside class="col-lg-4 d-block">
+         <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border border-light-subtle">
+            <h5 class="mb-4 fw-bold border-start border-4 ps-3 border-success-subtle text-dark-emphasis">
+               <i class="bi bi-newspaper me-1 text-success"></i> Articles récents
+            </h5>
+            {% for article in last_two_articles %}
+            <div class="mb-4 d-flex align-items-start">
+               {% if article.image %}
+               <img src="{{ article.image.url }}" alt="{{ article.title }}"
+                  class="me-3 rounded-3 shadow-sm border"
+                  style="width: 75px; height: 55px; object-fit: cover;">
+               {% endif %}
+               <div>
+                  <a href="{% url 'article_detail' article.pk %}"
+                     class="text-decoration-none text-dark fw-medium d-block mb-1 lh-sm hover-effect"
+                     style="font-size: 0.95rem;">
+                     {{ article.title|truncatechars:60 }}
+                  </a>
+                  <small class="text-muted">
+                     🗓️ {{ article.published_at|date:"d M Y" }}
+                  </small>
+               </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">Aucun article récent.</p>
+            {% endfor %}
+         </div>
+          <div class="card p-4 shadow-lg border-0" style="background: linear-gradient(135deg, #fdfcfa, #f0f4f8); border-radius: 20px; border-top: 5px solid #dc3545;">
+            <h5 class="fw-bold mb-3 text-danger d-flex align-items-center gap-2" style="font-size: 1.9rem;">
+              ✊ L'Islam triomphera dans le Monde
+            </h5>
+            <div class="alert alert-danger d-flex align-items-start gap-3 px-4 py-3 rounded" style="background-color: #ffe6e6; border-left: 5px solid #dc3545;">
+              <div>
+                <p class="mb-0 text-dark fw-semibold" style="font-size: 1.1rem; line-height: 1.7;">
+                  En <strong>Araby</strong>Sahoudite<strong>precisement</strong>… dans une de ces ville.<br>
+                  Le reste dans les commentaires.<br>
+                  <span class="text-danger">Ca finira bientot.</span>
+                </p>
+              </div>
+            </div>
+            <p class="mt-4 text-dark" style="line-height: 1.8; font-size: 1.08rem;">
+              Le monde regarde, mais détourne les yeux.<br>
+              À nous de parler. À nous de dénoncer. À nous d’agir.<br>
+              Donnons une voix à ceux qu’on tente de faire taire.
+            </p>
+
+            <blockquote class="fst-italic px-4 py-3 rounded mb-4" style="background-color: #e8f1fb; font-size: 1rem; border-left: 4px solid #198754; box-shadow: inset 0 0 6px rgba(13,110,253,0.1);">
+              « Celui qui soulage un croyant d’une difficulté dans ce monde, Allah le soulagera d’une difficulté au Jour du Jugement. »<br>
+              <small class="text-success">—Abû Hurayra: Sahih Muslim</small>
+            </blockquote>
+
+            <div class="mt-2 text-muted small" style="font-size: 0.97rem;">
+              <strong>📅 Dates de mémoire :</strong>
+              <ul class="list-unstyled mt-2 mb-0" style="line-height: 1.6;">
+                <li>🌙<strong>18 Fevrier 2026</strong> —Debut du Mois de Ramadan en Côte d'Ivoire </li>
+                <li>🍝 <strong>08 Mars 2026</strong> —Giga Rupture Collective du JFSI </li>
+                <li>🕌 <strong>15 Mars 2026</strong> — Le lendemain de la nuit du destin</li>
+              </ul>
+            </div>
+            <p class="mt-4 text-secondary" style="font-size: 0.86rem;">
+              Une pensée ne suffit pas. Un post ne suffit pas.<br>
+              Mais le silence, lui, tue. ✋
+            </p>
+            <div class="d-flex justify-content-center align-items-center gap-3 mt-4" style="font-size: 15px; user-select: none;">
+              <strong class="text-danger text-uppercase">🛑 Vous êtes tous invité(e)s à notre Rupture Collective</strong>
+              <img src="media/articles/rupture.jpg" alt="" style="width:100px; height:auto;">
+              <img src="" alt="" style="width:28px; height:auto;">
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+              <a href="https://www.amnesty.org/fr/petition/end-israels-genocide-against-palestinians-in-gaza/"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="btn btn-danger btn-sm rounded-pill px-3 fw-semibold d-flex align-items-center gap-2"
+                 style="transition: background 0.3s;">
+                ✍️ Agir maintenant
+              </a>
+            </div>
+          </div>
+      </aside>
+   </div>
+</div>
+
+<!-- Bootstrap + Bootstrap Icons -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+   .scroll-container {
+      position: relative;
+      height: 40px;
+      overflow: hidden;
+      width: 100%;
+   }
+
+  .scroll-text {
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   white-space: nowrap;
+   animation: scroll-left 18s linear infinite;
+   font-weight: 600;
+   color: white;
+}
+
+
+   @keyframes scroll-left {
+      0% {
+         left: 100%;
+      }
+      100% {
+         left: -100%;
+      }
+   }
+
+   .btn-black-outline {
+   background-color: white;
+   color: 198754;
+   border: 1px solid #198754;
+   transition: all 0.3s ease;
+}
+
+    .btn-black-outline:hover {
+   background-color: #198754;
+   color: white;
+}
+
+
+   .card:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+   }
+
+   .bg-opacity-50 {
+      background-color: rgba(0,0,0,0.5) !important;
+   }
+
+   aside a:hover {
+      text-decoration: underline;
+      color: black !important;
+   }
+
+   .black-pagination {
+      color: black;
+      border: 1px solid black;
+      background-color: #198754;
+   }
+
+   .black-pagination:hover {
+      background-color: #198754;
+      color: white;
+   }
+
+   .pagination {
+   display: flex;
+   justify-content: center;
+   gap: 8px;
+   padding: 20px 0;
+   font-family: 'Segoe UI', sans-serif;
+}
+
+   .page-item {
+   transition: transform 0.2s ease;
+}
+
+   .page-link {
+   padding: 10px 18px;
+   font-size: 16px;
+   font-weight: 500;
+   background-color: #ffffff;
+   color: #198754;
+   border: 2px solid #198754;
+   border-radius: 12px;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+   transition: all 0.25s ease;
+   cursor: pointer;
+   text-decoration: none;
+}
+
+   .page-link:hover {
+   background-color: #198754;
+   color: #ffffff;
+   transform: translateY(-2px);
+   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+   .page-item.active .page-link {
+   background-color: #198754;
+   color: #ffffff;
+   font-weight: bold;
+   border-color: #198754;
+   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+   .page-item.disabled .page-link {
+   background-color: #f0f4ff;
+   color: #198754;
+   border-color: #dbeafe;
+   cursor: not-allowed;
+   box-shadow: none;
+}
+
+  .d-flex.justify-content-center.gap-3.flex-wrap.mb-4 a {
+  color: black; /* texte noir */
+
+  border: 2px solid #198754;
+  transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+  padding: 0.25rem 1rem;
+  border-radius: 50px;
+}
+
+  .d-flex.justify-content-center.gap-3.flex-wrap.mb-4 a:hover {
+  background-color: black;
+  color: white;
+  border-color: #198754;
+  text-decoration: none;
+}
+
+  .d-flex.justify-content-center.gap-3.flex-wrap.mb-4 a.bg-dark {
+  background-color: #198754 !important;
+  color: white !important;
+  border-color: #198754 !important;
+}
+
+  .hover-effect:hover {
+   color: #198754;
+   text-decoration: underline;
+
+}
+
+   .hover-transform:hover img {
+  transform: scale(1.03);
+}
+
+   .banner-container {
+  border: 1px solid rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+   .banner-container:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+  .object-fit-cover {
+  object-fit: cover;
+}
+</style>
+{% endblock %}
